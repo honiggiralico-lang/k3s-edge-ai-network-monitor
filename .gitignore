@@ -1,0 +1,16 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+venv/
+env/
+.env
+
+# Modelli AI addestrati (decideremo se committarli o meno, per ora li ignoriamo)
+*.joblib
+*.onnx
+
+# Dataset (se scaricheremo file CSV pesanti)
+*.csv
