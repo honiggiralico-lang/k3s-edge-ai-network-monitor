@@ -1,0 +1,92 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: k3s-edge-ai
+  labels:
+    app: edge-ai
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: edge-ai
+  template:
+    metadata:
+      labels:
+        app: edge-ai
+    spec:
+      containers:
+      - name: flask-api
+        image: localhost:5000/k3s-edge-ai:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 5000
+        # Readiness e Liveness probe usando il nostro endpoint /health
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 5000
+          initialDelaySeconds: 5
+         periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 5000
+          initialDelaySeconds: 15
+          periodSeconds: 20
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: edge-ai-service
+spec:
+  selector:
+    app: edge-ai
+  ports:
+cat << 'EOF'> flask-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: k3s-edge-ai
+  labels:
+    app: edge-ai
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: edge-ai
+  template:
+    metadata:
+      labels:
+        app: edge-ai
+    spec:
+      containers:
+      - name: flask-api
+        image: localhost:5000/k3s-edge-ai:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 5000
+        # Readiness e Liveness probe usando il nostro endpoint /health
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 5000
+          initialDelaySeconds: 5
+         periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 5000
+          initialDelaySeconds: 15
+          periodSeconds: 20
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: edge-ai-service
+spec:
+  selector:
+    app: edge-ai
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 5000

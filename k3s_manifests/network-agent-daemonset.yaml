@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: network-agent
+  labels:
+    app: network-agent
+spec:
+  selector:
+    matchLabels:
+      app: network-agent
+  template:
+    metadata:
+      labels:
+        app: network-agent
+    spec:
+      # hostNetwork: true è FONDAMENTALE. 
+      # Permette al pod di vedere le interfacce di rete fisiche del nodo Debian (es. eth0)
+      # e non quelle virtuali di Kubernetes.
+      hostNetwork: true
+      containers:
+      - name: network-agent
+        image: localhost:5000/network-agent:latest
+        imagePullPolicy: Always
+        env:
+        - name: API_URL
+          value: "http://edge-ai-service/analyze"
+        - name: NET_INTERFACE
+          # Cambia questo valore se l'interfaccia principale dei tuoi nodi Debian si chiama diversamente (es. ens18)
+          value: "eth0" 
+        - name: INTERVAL
+          value: "5"
